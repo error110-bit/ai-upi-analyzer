@@ -20,6 +20,28 @@ class Transaction extends Equatable {
     required this.category,
   });
 
+  Map<String, dynamic> toJson() {
+  return {
+    'amount': amount,
+    'merchant': merchant,
+    'date': date.toIso8601String(),
+    'type': type.name,
+    'category': category,
+   };
+  }
+
+   factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      amount: json['amount'],
+      merchant: json['merchant'],
+      date: DateTime.parse(json['date']),
+      type: json['type'] == 'income'
+        ? TransactionType.income
+        : TransactionType.expense,
+      category: json['category'],
+    );
+  }
+
   @override
   List<Object?> get props => [
         amount,
