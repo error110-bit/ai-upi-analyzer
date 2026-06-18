@@ -1,12 +1,19 @@
+import 'transaction_type.dart';
+
 class ParsedTransaction {
   final double amount;
+
   final String merchant;
-  final bool isExpense;
+
+  final DateTime timestamp;
+
+  final TransactionType type;
 
   const ParsedTransaction({
     required this.amount,
     required this.merchant,
-    required this.isExpense,
+    required this.timestamp,
+    required this.type,
   });
 
   @override
@@ -15,7 +22,8 @@ class ParsedTransaction {
 ParsedTransaction(
  amount: $amount,
  merchant: $merchant,
- isExpense: $isExpense
+ timestamp: $timestamp,
+ type: $type
 )
 ''';
   }

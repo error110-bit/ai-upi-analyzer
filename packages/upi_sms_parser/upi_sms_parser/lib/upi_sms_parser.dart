@@ -1,5 +1,5 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+
+library upi_sms_parser;
+
+export 'src/models/parsed_transaction.dart';
+export 'src/parser/upi_parser.dart';
