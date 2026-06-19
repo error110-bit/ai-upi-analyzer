@@ -26,6 +26,10 @@ class DashboardBloc
     on<DeleteTransaction>(
       _onDeleteTransaction,
     );
+
+    on<AddTransaction>(
+      _onAddTransaction,
+    );
   }
 
   Future<void> _onFetchDashboardData(
@@ -62,6 +66,27 @@ class DashboardBloc
       emit(
         const DashboardError(
           'Failed to delete transaction',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onAddTransaction(
+    AddTransaction event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      await repository.saveTransaction(
+        event.transaction,
+      );
+
+      await _loadDashboard(
+        emit,
+      );
+    } on Exception {
+      emit(
+        const DashboardError(
+          'Failed to add transaction',
         ),
       );
     }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../models/transaction.dart';
 
 abstract class DashboardEvent extends Equatable {
   const DashboardEvent();
@@ -29,5 +30,19 @@ class DeleteTransaction extends DashboardEvent {
   @override
   List<Object?> get props => [
         transactionId,
+      ];
+}
+
+class AddTransaction
+    extends DashboardEvent {
+  final Transaction transaction;
+
+  const AddTransaction(
+    this.transaction,
+  );
+
+  @override
+  List<Object?> get props => [
+        transaction,
       ];
 }

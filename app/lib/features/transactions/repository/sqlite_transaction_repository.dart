@@ -29,6 +29,7 @@ class SQLiteTransactionRepository
           .getDatabasesPath(),
       'upi_analyzer.db',
     );
+    print('DB PATH: $dbPath');
 
     return await databaseFactory
         .openDatabase(
@@ -44,7 +45,7 @@ class SQLiteTransactionRepository
               id TEXT PRIMARY KEY,
               amount REAL,
               merchant TEXT,
-              date TEXT,
+              timestamp TEXT,
               type TEXT,
               category TEXT
             )
