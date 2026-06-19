@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
@@ -183,6 +184,29 @@ class _DashboardScreenState
                   const SizedBox(
                     height: 12,
                   ),
+
+                  SizedBox( 
+                    height: 200,
+                    child: PieChart(
+                      PieChartData(
+                        sections: state.categorySpendings
+                            .map(
+                              (categorySpending) =>
+                                  PieChartSectionData(
+                                value:
+                                    categorySpending.amount,
+                                title:
+                                    categorySpending.category,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+
+const SizedBox(
+  height: 24,
+),
 
                   const SizedBox(
                     height: 12,
