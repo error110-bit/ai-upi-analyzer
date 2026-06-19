@@ -1,17 +1,22 @@
+import 'package:app/features/transactions/services/sms_import_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'features/transactions/bloc/dashboard_bloc.dart';
 import 'features/transactions/repository/sqlite_transaction_repository.dart';
 import 'features/transactions/screens/dashboard_screen.dart';
+import 'features/transactions/services/mock_sms_import_service.dart';
 
 void main() {
   final repository =
       SQLiteTransactionRepository();
+  final smsImportService =
+      MockSmsImportService();
 
   runApp(
     MyApp(
       repository: repository,
+      smsImportService: smsImportService,
     ),
   );
 }
@@ -19,10 +24,13 @@ void main() {
 class MyApp extends StatelessWidget {
   final SQLiteTransactionRepository
       repository;
+  final SmsImportService
+      smsImportService;
 
   const MyApp({
     super.key,
     required this.repository,
+    required this.smsImportService,
   });
 
   @override
@@ -32,6 +40,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => DashboardBloc(
         repository,
+        smsImportService,
       ),
       child: MaterialApp(
         debugShowCheckedModeBanner:

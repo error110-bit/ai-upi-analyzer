@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../services/sms_import_service.dart';
 
 import '../models/category_spending.dart';
 import '../models/transaction.dart';
@@ -9,9 +10,11 @@ import 'dashboard_state.dart';
 class DashboardBloc
     extends Bloc<DashboardEvent, DashboardState> {
   final TransactionRepository repository;
+  final SmsImportService smsImportService;
 
   DashboardBloc(
     this.repository,
+    this.smsImportService,
   ) : super(
           const DashboardInitial(),
         ) {
@@ -29,6 +32,10 @@ class DashboardBloc
 
     on<AddTransaction>(
       _onAddTransaction,
+    );
+
+    on<ImportSms>(
+      _onImportSms,
     );
   }
 
@@ -91,6 +98,32 @@ class DashboardBloc
       );
     }
   }
+  
+  Future<void> _onImportSms(
+    ImportSms event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      final transactions =
+          await smsImportService
+              .importTransactions();
+
+      await repository
+          .saveTransactions(
+        transactions,
+      );
+
+      await _loadDashboard(
+        emit,
+      );
+    } on Exception {
+      emit(
+        const DashboardError(
+          'Failed to import SMS',
+        ),
+      );
+    }
+  }
 
   Future<void> _loadDashboard(
     Emitter<DashboardState> emit,
@@ -135,7 +168,7 @@ class DashboardBloc
       );
     }
   }
-
+  
   double _calculateTotalExpenses(
     List<Transaction> transactions,
   ) {

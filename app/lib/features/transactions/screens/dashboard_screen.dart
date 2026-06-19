@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
-import '../models/transaction.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
@@ -42,35 +41,19 @@ class _DashboardScreenState
         title: const Text(
           'UPI Expense Analyzer',
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.download,
+            ),
+            onPressed: () {
+              context.read<DashboardBloc>().add(
+                const ImportSms(),
+              );
+            },
+          ),
+        ],
       ),
-
-      floatingActionButton:
-        FloatingActionButton(
-      onPressed: () {
-        context
-            .read<DashboardBloc>()
-            .add(
-              AddTransaction(
-                Transaction(
-                  id: DateTime.now()
-                      .millisecondsSinceEpoch
-                      .toString(),
-                  amount: 250,
-                  merchant: 'Test Merchant',
-                  timestamp: DateTime.now(),
-                  type:
-                      TransactionType
-                          .expense,
-                  category: 'Food',
-                ),
-              ),
-            );
-      },
-      child: const Icon(
-        Icons.add,
-      ),
-    ),
-
 
       body: BlocBuilder<
           DashboardBloc,
