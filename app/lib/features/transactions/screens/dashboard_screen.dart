@@ -148,6 +148,42 @@ class _DashboardScreenState
                     ),
                   ),
 
+                  const Text(
+                    'Insights',
+                     style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                     ),
+                  ),
+
+                  const SizedBox(
+                     height: 12,
+                  ),
+
+                  Card(
+                    child: ListTile(
+                     title: const Text(
+                      'Highest Spending Category',
+                     ),
+                     subtitle: Text(
+                      state.categorySpendings.isEmpty
+                         ? 'No data'
+                         : state.categorySpendings
+                             .reduce(
+                               (a, b) =>
+                                   a.amount > b.amount
+                                      ? a
+                                      : b,
+                             )
+                             .category,
+                        ),
+                      ),
+                     ),
+
+                  const SizedBox(
+                    height: 12,
+                  ),
+
                   const SizedBox(
                     height: 12,
                   ),
