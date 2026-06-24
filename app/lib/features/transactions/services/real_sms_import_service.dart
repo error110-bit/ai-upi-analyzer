@@ -12,7 +12,18 @@ class RealSmsImportService
   @override
   Future<List<Transaction>>
       importTransactions() async {
-    throw UnimplementedError();
+
+    await _requestPermission();
+
+    final messages =
+        await _getRecentMessages();
+
+    final transactions =
+        _convertToTransactions(
+          messages,
+        );
+
+    return transactions;
   }
 
   Future<void>
@@ -52,12 +63,65 @@ class RealSmsImportService
 
     return recentMessages;
   }
-  
+
   List<Transaction>
-      _convertToTransactions(
+     _convertToTransactions(
     List<SmsMessage> messages,
   ) {
-    throw UnimplementedError();
+    final transactions =
+        <Transaction>[];
+
+    for (final message in messages) {
+      if (message.body == null ||
+          message.date == null) {
+        continue;
+      }
+
+      final parsed =
+          UpiParser.parse(
+        message.body!,
+        message.date!,
+      );
+
+      if (parsed == null) {
+        continue;
+      }
+
+      final category =
+          TransactionCategorizer
+              .categorize(
+        parsed.merchant,
+      );
+
+      final transaction =
+          Transaction(
+        id: DateTime.now()
+            .millisecondsSinceEpoch
+            .toString(),
+
+        amount: parsed.amount,
+
+        merchant:
+            parsed.merchant,
+
+        timestamp:
+            parsed.timestamp,
+
+        type: parsed.type.name == 'income'
+            ? TransactionType.income
+            : TransactionType.expense,
+
+        category: category,
+      );
+
+      transactions.add(
+        transaction,
+      );
+    }
+
+    return transactions;
   }
+
+   
 }
 
