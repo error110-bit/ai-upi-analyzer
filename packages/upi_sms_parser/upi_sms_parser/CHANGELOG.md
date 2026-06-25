@@ -1,3 +1,7 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* Initial stable release.
+* Added UPI SMS parser.
+* Supports parsing income and expense transactions.
+* Extracts transaction amount, merchant, timestamp, and transaction type.
+* Pure Dart package with no Flutter dependency.
