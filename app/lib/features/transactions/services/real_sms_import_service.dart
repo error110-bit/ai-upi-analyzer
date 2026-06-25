@@ -1,6 +1,6 @@
 import 'package:flutter_sms_inbox/flutter_sms_inbox.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:upi_sms_parser/upi_sms_parser.dart';
+import 'package:upi_sms_parser/upi_sms_parser.dart' as upi_parser;
 
 import '../models/transaction.dart';
 import 'sms_import_service.dart';
@@ -78,7 +78,7 @@ class RealSmsImportService
       }
 
       final parsed =
-          UpiParser.parse(
+          upi_parser.UpiParser.parse(
         message.body!,
         message.date!,
       );
