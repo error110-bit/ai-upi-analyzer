@@ -28,12 +28,24 @@ class RealSmsImportService
 
   Future<void>
       _requestPermission() async {
-    final status =
+    var status =
         await Permission.sms.status;
 
     if (!status.isGranted) {
+      status = await Permission.sms.request();
+    }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+
       throw Exception(
-          'SMS permission denied.');
+        'SMS permission is permanently denied. Please enable it in settings.',
+      );  
+    }
+
+    if(!status.isGranted) {
+      throw Exception(
+        'SMS permission is required to import transactions.',
+      );
     }
   }
 

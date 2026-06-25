@@ -1,12 +1,12 @@
-```yaml
+
 name: upi_sms_parser
 description: A lightweight Dart package for parsing UPI and bank transaction SMS into structured transaction data.
 
 version: 1.0.0
 
-homepage: https://github.com/YOUR_USERNAME/upi_sms_parser
-repository: https://github.com/YOUR_USERNAME/upi_sms_parser
-issue_tracker: https://github.com/YOUR_USERNAME/upi_sms_parser/issues
+homepage: https://github.com/error110-bit/upi_sms_parser.git
+repository: https://github.com/error110-bit/upi_sms_parser
+issue_tracker: https://github.com/error110-bit/upi_sms_parser/issues
 
 topics:
   - upi
@@ -25,4 +25,3 @@ dev_dependencies:
   test: ^1.25.0
   flutter_test:
     sdk: flutter
-```
