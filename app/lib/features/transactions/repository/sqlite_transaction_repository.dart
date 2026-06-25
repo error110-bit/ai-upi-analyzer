@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../models/transaction.dart' as models;
 import 'transaction_repository.dart';
@@ -19,40 +19,30 @@ class SQLiteTransactionRepository
   }
 
   Future<Database> _initDatabase() async {
-    sqfliteFfiInit();
-
-    final databaseFactory =
-        databaseFactoryFfi;
-
     final dbPath = join(
-      await databaseFactory
-          .getDatabasesPath(),
+      await getDatabasesPath(),
       'upi_analyzer.db',
     );
-    print('DB PATH: $dbPath');
 
-    return await databaseFactory
-        .openDatabase(
+    return await openDatabase(
       dbPath,
-      options: OpenDatabaseOptions(
-        version: 1,
-        onCreate: (
-          db,
-          version,
-        ) async {
-          await db.execute('''
-            CREATE TABLE IF NOT EXISTS transactions(
-              id TEXT PRIMARY KEY,
-              amount REAL,
-              merchant TEXT,
-              timestamp TEXT,
-              type TEXT,
-              category TEXT
-            )
-          ''');
-        },
-      ),
-    );
+      version: 1,
+      onCreate: (
+        db,
+        version,
+      ) async {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS transactions(
+            id TEXT PRIMARY KEY,
+            amount REAL,
+            merchant TEXT,
+            timestamp TEXT,
+            type TEXT,
+            category TEXT
+          )
+        ''');
+       },
+      );
   }
 
   @override
@@ -64,6 +54,7 @@ class SQLiteTransactionRepository
     await db.insert(
       'transactions',
       transaction.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.ignore,
     );
   }
 

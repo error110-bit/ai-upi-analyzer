@@ -95,9 +95,7 @@ class RealSmsImportService
 
       final transaction =
           Transaction(
-        id: DateTime.now()
-            .millisecondsSinceEpoch
-            .toString(),
+        id: message.id.toString(),
 
         amount: parsed.amount,
 
@@ -118,7 +116,7 @@ class RealSmsImportService
         transaction,
       );
     }
-
+    
     return transactions;
   }
 

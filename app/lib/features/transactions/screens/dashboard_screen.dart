@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../insights/services/insight_generator.dart';
+import '../../insights/widgets/insight_card.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
-import 'package:fl_chart/fl_chart.dart';
+import '../widgets/import_sms_card.dart';
+import '../widgets/summary_cards.dart';
+import '../widgets/recent_transaction.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
@@ -18,6 +22,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState
     extends State<DashboardScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -33,27 +38,13 @@ class _DashboardScreenState
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      
+
       appBar: AppBar(
         title: const Text(
           'UPI Expense Analyzer',
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.download,
-            ),
-            onPressed: () {
-              context.read<DashboardBloc>().add(
-                const ImportSms(),
-              );
-            },
-          ),
-        ],
       ),
 
       body: BlocBuilder<
@@ -63,6 +54,7 @@ class _DashboardScreenState
           context,
           state,
         ) {
+
           if (state
               is DashboardLoading) {
             return const Center(
@@ -71,7 +63,8 @@ class _DashboardScreenState
             );
           }
 
-          if (state is DashboardError) {
+          if (state
+              is DashboardError) {
             return Center(
               child: Text(
                 state.message,
@@ -79,169 +72,108 @@ class _DashboardScreenState
             );
           }
 
-          if (state is DashboardLoaded) {
-            final recentTransactions =
-                state.transactions
-                    .take(5)
-                    .toList();
+          if (state
+              is DashboardLoaded) {
+
+            final insight =
+                InsightGenerator
+                    .generateInsight(
+              transactions:
+                  state.transactions,
+
+              categorySpendings:
+                  state
+                      .categorySpendings,
+            );
 
             return SingleChildScrollView(
+
               padding:
                   const EdgeInsets.all(
                 16,
               ),
+
               child: Column(
                 crossAxisAlignment:
-                    CrossAxisAlignment
-                        .start,
+                   CrossAxisAlignment.start,
                 children: [
-                  Card(
-                    child: ListTile(
-                      title: const Text(
-                        'Total Income',
-                      ),
-                      subtitle: Text(
-                        '₹${state.totalIncome.toStringAsFixed(2)}',
-                      ),
-                    ),
+
+                  const Text(
+                   'Welcome',
+                   style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                   ) ,
                   ),
 
                   const SizedBox(
-                    height: 12,
-                  ),
-
-                  Card(
-                    child: ListTile(
-                      title: const Text(
-                        'Total Expenses',
-                      ),
-                      subtitle: Text(
-                        '₹${state.totalExpenses.toStringAsFixed(2)}',
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 12,
-                  ),
-
-                  Card(
-                    child: ListTile(
-                      title: const Text(
-                        'Transactions',
-                      ),
-                      subtitle: Text(
-                        '${state.transactions.length}',
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 24,
+                    height: 8,
                   ),
 
                   const Text(
-                    'Recent Transactions',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight:
-                          FontWeight.bold,
-                    ),
-                  ),
-
-                  const Text(
-                    'Insights',
-                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                     ),
+                   'Track and analyze your UPI spending effortlessly.',
+                   style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                   ),
                   ),
 
                   const SizedBox(
-                     height: 12,
-                  ),
+                   height: 24,
+                 ),
 
-                  Card(
-                    child: ListTile(
-                     title: const Text(
-                      'Highest Spending Category',
-                     ),
-                     subtitle: Text(
-                      state.categorySpendings.isEmpty
-                         ? 'No data'
-                         : state.categorySpendings
-                             .reduce(
-                               (a, b) =>
-                                   a.amount > b.amount
-                                      ? a
-                                      : b,
-                             )
-                             .category,
-                        ),
-                      ),
-                     ),
+                  ImportSmsCard(
 
-                  const SizedBox(
-                    height: 12,
-                  ),
+                    onImport: () {
 
-                  SizedBox( 
-                    height: 200,
-                    child: PieChart(
-                      PieChartData(
-                        sections: state.categorySpendings
-                            .map(
-                              (categorySpending) =>
-                                  PieChartSectionData(
-                                value:
-                                    categorySpending.amount,
-                                title:
-                                    categorySpending.category,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-
-const SizedBox(
-  height: 24,
-),
-
-                  const SizedBox(
-                    height: 12,
-                  ),
-
-                  if (recentTransactions
-                      .isEmpty)
-                    const Text(
-                      'No transactions yet',
-                    )
-                  else
-                    ...recentTransactions
-                        .map(
-                      (
-                        transaction,
-                      ) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(
-                              transaction
-                                  .merchant,
-                            ),
-                            subtitle:
-                                Text(
-                              transaction
-                                  .category,
-                            ),
-                            trailing:
-                                Text(
-                              '₹${transaction.amount.toStringAsFixed(2)}',
-                            ),
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Importing SMS...',
                           ),
-                        );
-                      },
-                    ),
+                          duration: Duration(
+                            seconds: 2,
+                          ),
+                        ),
+                      );
+                      context.read<DashboardBloc>().add(
+                        const ImportSms(),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  SummaryCards(
+
+                    totalIncome:
+                        state.totalIncome,
+
+                    totalExpenses:
+                        state.totalExpenses,
+
+                    transactionCount:
+                        state
+                            .transactions
+                            .length,
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  InsightCard(
+                    insight:
+                        insight,
+                  ),
+                  const SizedBox(height:20,),
+                  RecentTransactions(
+                    transactions: state.transactions,
+                    limit: 5,
+                  )
                 ],
               ),
             );

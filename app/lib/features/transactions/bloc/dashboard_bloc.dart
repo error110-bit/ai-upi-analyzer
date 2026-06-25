@@ -108,6 +108,10 @@ class DashboardBloc
           await smsImportService
               .importTransactions();
 
+      print(
+        'IMPORTED COUNT: ${transactions.length}',
+      );
+
       await repository
           .saveTransactions(
         transactions,
@@ -116,14 +120,18 @@ class DashboardBloc
       await _loadDashboard(
         emit,
       );
-    } on Exception {
+    } catch (e,stackTrace) {
+      print('IMport SMS ERROR: $e');
+      print(stackTrace);
+
       emit(
-        const DashboardError(
-          'Failed to import SMS',
+        DashboardError(
+          e.toString()
         ),
       );
     }
   }
+  
 
   Future<void> _loadDashboard(
     Emitter<DashboardState> emit,
@@ -160,10 +168,12 @@ class DashboardBloc
               categorySpendings,
         ),
       );
-    } on Exception {
+    } catch (e, stackTrace) {
+      print('LOAD DASHBOARD ERROR: $e');
+      print(stackTrace);
       emit(
-        const DashboardError(
-          'Failed to load dashboard data',
+        DashboardError(
+          e.toString()
         ),
       );
     }
