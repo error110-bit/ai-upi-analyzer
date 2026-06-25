@@ -1,5 +1,5 @@
 
-name: upi_sms_parser
+name: falguni_upi_sms_parser
 description: A lightweight Dart package for parsing UPI and bank transaction SMS into structured transaction data.
 
 version: 1.0.0
